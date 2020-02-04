@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Appcent Project</string>
+    <string name="request_failed">Request Failed</string>
+    <string name="url_not_found">Photo Url not found!</string>
 </resources>

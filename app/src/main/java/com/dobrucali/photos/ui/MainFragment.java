@@ -59,8 +59,8 @@ public class MainFragment extends Fragment {
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if (isLastItemVisible(recyclerView, mLayoutManager)) {
-                   Log.i("app", "Recyclerview Last item visible");
-                   mViewModel.getRecentPhoto(getViewLifecycleOwner());
+                   //Log.i("app", "Recyclerview last item visible");
+                   mViewModel.getRecentPhoto(getViewLifecycleOwner(), getContext());
                 }
             }
         });
@@ -87,15 +87,11 @@ public class MainFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(MainViewModel.class);
 
-        mViewModel.getRecentPhoto(getViewLifecycleOwner());
+        mViewModel.getRecentPhoto(getViewLifecycleOwner(), getContext());
 
         mViewModel.photoList.observe(getViewLifecycleOwner(), photoList -> {
-            if (photoList == null) {
-                Toast.makeText(getContext(), "Request Failed",Toast.LENGTH_LONG).show();
-            } else {
-                photoAdapter.setPhotoList(photoList);
-                photoAdapter.notifyDataSetChanged();
-            }
+            photoAdapter.setPhotoList(photoList);
+            photoAdapter.notifyDataSetChanged();
         });
     }
 

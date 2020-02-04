@@ -43,7 +43,7 @@ public class DetailPhotoFragment extends Fragment {
             String photoUrl = getArguments().getString(PHOTO_URL_KEY);
             Picasso.with(getContext()).load(photoUrl).into(binding.detailPhotoImageView);
         } else {
-            Toast.makeText(getContext(), "Photo Url not found!", Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), getString(R.string.url_not_found), Toast.LENGTH_LONG).show();
         }
 
         return binding.getRoot();

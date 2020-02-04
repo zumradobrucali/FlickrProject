@@ -1,23 +1,23 @@
-package com.dobrucali.photos;
+package com.dobrucali.photos.adapter;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
+import com.dobrucali.photos.R;
 import com.dobrucali.photos.model.Photo;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> {
+public class PhotoAdapter extends RecyclerView.Adapter<ViewHolder> {
     private List<Photo> photoList;
+    private ItemClickListener itemClickListener;
 
-    public PhotoAdapter(List<Photo> photoList) {
+    public PhotoAdapter(List<Photo> photoList, ItemClickListener itemClickListener) {
         this.photoList = photoList;
+        this.itemClickListener = itemClickListener;
     }
 
     public void setPhotoList(List<Photo> photoList) {
@@ -37,9 +37,16 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
 
         Photo photo = photoList.get(position);
 
-        String imageUri = constructPhotoUrl(photo.getFarm(), photo.getServer(), photo.getId(), photo.getSecret());
+        String photoUrl = constructPhotoUrl(photo.getFarm(), photo.getServer(), photo.getId(), photo.getSecret());
 
-        Picasso.with(holder.itemView.getContext()).load(imageUri).into(holder.photoImageView);
+        Picasso.with(holder.itemView.getContext()).load(photoUrl).into(holder.photoImageView);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                itemClickListener.onItemClick(photoUrl);
+            }
+        });
 
     }
 
@@ -52,13 +59,5 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
         return "https://farm" + farm + ".staticflickr.com/" + server + "/" + id + "_" + secret + ".jpg";
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView photoImageView;
-
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            photoImageView = itemView.findViewById(R.id.photo_image_view);
-        }
-    }
 }

@@ -1,4 +1,4 @@
-package com.dobrucali.photos.ui;
+package com.dobrucali.photos.viewModel;
 
 import androidx.lifecycle.ViewModel;
 

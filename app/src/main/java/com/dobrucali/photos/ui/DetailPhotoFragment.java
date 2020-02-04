@@ -2,7 +2,6 @@ package com.dobrucali.photos.ui;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Bundle;
 
@@ -17,7 +16,7 @@ import android.widget.Toast;
 
 import com.dobrucali.photos.R;
 import com.dobrucali.photos.databinding.DetailPhotoFragmentBinding;
-import com.dobrucali.photos.databinding.MainFragmentBinding;
+import com.dobrucali.photos.viewModel.DetailPhotoViewModel;
 import com.squareup.picasso.Picasso;
 
 public class DetailPhotoFragment extends Fragment {

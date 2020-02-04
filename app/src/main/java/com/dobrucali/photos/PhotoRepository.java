@@ -17,14 +17,13 @@ public class PhotoRepository {
     String method = "flickr.photos.getRecent";
     String format = "json";
     Integer perPage = 20;
-    Integer page = 1;
     Integer noJsonCallback = 1;
 
     public PhotoRepository() {
         photoApi = ApiClient.getClient().create(PhotoApi.class);
     }
 
-    public LiveData<GetRecentPhotoResponse> getRecentPhoto() {
+    public LiveData<GetRecentPhotoResponse> getRecentPhoto(Integer page) {
         final MutableLiveData<GetRecentPhotoResponse> data = new MutableLiveData<>();
         photoApi.getRecentPhoto(method, apiKey, perPage, page, format, noJsonCallback).enqueue(new Callback<GetRecentPhotoResponse>() {
             @Override

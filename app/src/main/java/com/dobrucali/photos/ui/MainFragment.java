@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
@@ -15,16 +14,13 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.dobrucali.photos.MainViewModel;
+import com.dobrucali.photos.R;
 import com.dobrucali.photos.adapter.ItemClickListener;
 import com.dobrucali.photos.adapter.PhotoAdapter;
-import com.dobrucali.photos.R;
 import com.dobrucali.photos.databinding.MainFragmentBinding;
-import com.dobrucali.photos.model.*;
+import com.dobrucali.photos.viewModel.MainViewModel;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MainFragment extends Fragment {
 
@@ -51,13 +47,23 @@ public class MainFragment extends Fragment {
             }
         };
 
-
         photoAdapter = new PhotoAdapter(new ArrayList<>(), itemClickListener);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getContext());
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         binding.recentPhotoRecyclerView.setLayoutManager(mLayoutManager);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(binding.recentPhotoRecyclerView.getContext(),DividerItemDecoration.VERTICAL);
         binding.recentPhotoRecyclerView.addItemDecoration(dividerItemDecoration);
         binding.recentPhotoRecyclerView.setAdapter(photoAdapter);
+
+        binding.recentPhotoRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (isLastItemVisible(recyclerView, mLayoutManager)) {
+                   Log.i("app", "Recyclerview Last item visible");
+                   mViewModel.getRecentPhoto(getViewLifecycleOwner());
+                }
+            }
+        });
 
         return binding.getRoot();
     }
@@ -70,20 +76,27 @@ public class MainFragment extends Fragment {
                 .commit();
     }
 
+    private boolean isLastItemVisible(RecyclerView mRecyclerView, LinearLayoutManager linearLayoutManager) {
+        int pos = linearLayoutManager.findLastVisibleItemPosition();
+        int numItems = mRecyclerView.getAdapter().getItemCount();
+        return ((pos + 1) >= numItems);
+    }
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = new ViewModelProvider(this).get(MainViewModel.class);
-        mViewModel.getRecentPhoto().observe(getViewLifecycleOwner(), recentPhotoResponse -> {
-            if (recentPhotoResponse == null) {
+
+        mViewModel.getRecentPhoto(getViewLifecycleOwner());
+
+        mViewModel.photoList.observe(getViewLifecycleOwner(), photoList -> {
+            if (photoList == null) {
                 Toast.makeText(getContext(), "Request Failed",Toast.LENGTH_LONG).show();
             } else {
-                List<Photo> photoList = recentPhotoResponse.getPhotos().getPhoto();
                 photoAdapter.setPhotoList(photoList);
                 photoAdapter.notifyDataSetChanged();
             }
         });
-
     }
 
 }
